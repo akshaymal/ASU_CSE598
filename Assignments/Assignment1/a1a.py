@@ -41,6 +41,8 @@ test_data = None
 #############################
 ########## TO DO ############
 #############################
+test_data = tf.data.Dataset.from_tensor_slices(test)
+test_data = test_data.batch(batch_size)
 
 
 # Step 3: create weights and bias
@@ -53,25 +55,29 @@ w, b = None, None
 ########## TO DO ############
 #############################
 
+w = tf.compat.v1.get_variable(name='weights', shape=(784, 10), initializer=tf.random_normal_initializer(0, 0.01))
+b = tf.compat.v1.get_variable(name='bias', shape=(1, 10), initializer=tf.zeros_initializer())
 
 # Step 4: build model
 # the model that returns the logits.
 # this logits will be later passed through softmax layer
 def compute_logits(img):
-    pass
+    # pass
 #############################
 ########## TO DO ############
 #############################
-
+    return tf.matmul(img, w) + b
 
 
 # Step 5: define loss function
 # use cross entropy of softmax of logits as the loss function
 def compute_loss(logits, labels):
-    pass
+    # pass
 #############################
 ########## TO DO ############
 #############################
+    entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels, name='entropy')
+    return tf.reduce_mean(entropy, name='loss')
 
 
 # Step 6: define optimizer
@@ -80,6 +86,7 @@ optimizer = None
 #############################
 ########## TO DO ############
 #############################
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.1)
 
 # Step 7: calculate accuracy
 def compute_accuracy(dataset):
@@ -100,6 +107,7 @@ train_summary_writer = tf.summary.create_file_writer(log_dir_train)
 test_summary_writer = tf.summary.create_file_writer(log_dir_test)
 
 
+# writer = tf.summary.create_file_writer('./logs/logreg_placeholder', tf.compat.v1.get_default_graph())
 # Step 8: train the model
 start_time = time.time()
 # train the model n_epochs times
@@ -132,4 +140,5 @@ for i in range(n_epochs):
     print(template.format(i+1, average_loss, train_accuracy*100, test_accuracy*100))
 end_time = time.time()   
 
+# writer.close()
 print('Total Time {} ms.'.format(end_time- start_time))
